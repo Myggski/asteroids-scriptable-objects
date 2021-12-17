@@ -1,19 +1,24 @@
 using System;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New FloatVar", menuName = "SOs/FloatVar")]
-public class FloatVar : ScriptableObject {
-    [Range(0, 20)]
-    [SerializeField]
-    private float _value;
+namespace DefaultNamespace.Vars
+{
+    [CreateAssetMenu(fileName = "new FloatVar", menuName = "SOs/Float Var")]
+    public class FloatVar : ScriptableObject
+    {
+        [Range(0f, 20f)]
+        [SerializeField] private float _value;
 
-    [TextArea(3, 6)]
-    [SerializeField]
-    private string _developerDescription;
+        [TextArea(3, 6)]
+        [SerializeField] private string _developerDescription;
+        
+        public float Value => _value;
 
-    private float _currentValue;
+        private float _currentValue;
 
-    public float Value => _value;
-
-    private void OnEnable() => _currentValue = _value;
+        private void OnEnable()
+        {
+            _currentValue = _value;
+        }
+    }
 }
