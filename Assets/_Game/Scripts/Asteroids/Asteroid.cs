@@ -1,6 +1,5 @@
 using DefaultNamespace.ScriptableEvents;
 using UnityEngine;
-using Variables;
 using Random = UnityEngine.Random;
 
 namespace Asteroids
@@ -9,7 +8,8 @@ namespace Asteroids
     public class Asteroid : MonoBehaviour
     {
         [SerializeField] private ScriptableEventInt _onAsteroidDestroyed;
-        
+        [SerializeField] private AsteroidSet _asteroidSet;
+
         [Header("Config:")]
         [SerializeField] private float _minForce;
         [SerializeField] private float _maxForce;
@@ -24,6 +24,8 @@ namespace Asteroids
         private Rigidbody2D _rigidbody;
         private Vector3 _direction;
         private int _instanceId;
+        
+        public int InstanceId => _instanceId;
 
         private void Start()
         {
@@ -34,6 +36,7 @@ namespace Asteroids
             AddForce();
             AddTorque();
             SetSize();
+            RegisterAsteroid();
         }
         
         private void OnTriggerEnter2D(Collider2D other)
@@ -47,16 +50,6 @@ namespace Asteroids
         private void HitByLaser()
         {
             _onAsteroidDestroyed.Raise(_instanceId);
-            Destroy(gameObject);
-        }
-
-        // TODO Can we move this to a single listener, something like an AsteroidDestroyer?
-        public void OnHitByLaser(IntReference asteroidId)
-        {
-            if (_instanceId == asteroidId.GetValue())
-            {
-                Destroy(gameObject);
-            }
         }
         
         public void OnHitByLaserInt(int asteroidId)
@@ -100,6 +93,14 @@ namespace Asteroids
         {
             var size = Random.Range(_minSize, _maxSize);
             _shape.localScale = new Vector3(size, size, 0f);
+        }
+
+        private void RegisterAsteroid() {
+            _asteroidSet.RegisterAsteroid(this);
+        }
+
+        private void OnDestroy() {
+            _asteroidSet.DestroyAsteroid(this);
         }
     }
 }

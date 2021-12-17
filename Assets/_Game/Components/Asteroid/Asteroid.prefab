@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _onAsteroidDestroyed: {fileID: 11400000, guid: 6194a1f60d68f9f4da5519ce74b63a58, type: 2}
+  _asteroidSet: {fileID: 11400000, guid: 4ecbe0ea7aef5bc4a818492b589d9a23, type: 2}
   _minForce: 2
   _maxForce: 6
   _minSize: 0.2
