@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: HealthObservable
   m_EditorClassIdentifier: 
   _value: 10
-  _onValueChangedEvent: {fileID: 11400000, guid: 1c89cb8edd31962449ecaa94187a07fc, type: 2}
+  _onValueChangedIntReference: {fileID: 11400000, guid: 1c89cb8edd31962449ecaa94187a07fc, type: 2}

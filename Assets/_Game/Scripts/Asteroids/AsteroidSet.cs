@@ -1,15 +1,16 @@
 ﻿using Core;
 using UnityEngine;
+using Variables;
 
 namespace Asteroids {
-    [CreateAssetMenu(fileName = "new AsteroidSet", menuName = "Sets/AsteroidSet")]
-    public class AsteroidSet : RuntimeSet<int, Asteroid> {
-        public void RegisterAsteroid(Asteroid asteroid) {
-            Add(asteroid.InstanceId, asteroid);
-        }
+    [CreateAssetMenu(fileName = "New AsteroidSet", menuName = "Sets/AsteroidSet")]
+    public class AsteroidSet : RuntimeSet<Asteroid> {
+        [SerializeField] private IntObservable _asteroidDestroyedObservable;
 
-        public void DestroyAsteroid(Asteroid asteroid) {
-            Remove(asteroid.InstanceId);
+        public override void Remove(int instanceId) {
+            base.Remove(instanceId);
+            
+            _asteroidDestroyedObservable.ApplyChange(1);
         }
     }
 }

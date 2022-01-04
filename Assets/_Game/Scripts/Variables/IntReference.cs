@@ -1,43 +1,39 @@
 ﻿using System;
-using DefaultNamespace.ScriptableEvents;
 using UnityEngine;
 
-namespace Variables
-{
+namespace Variables {
     [Serializable]
-    public class IntReference
-    {
+    public class IntReference {
         // TODO Can we make this look nicer with a custom property drawer?
+        [Header("Config:")]
         [SerializeField] private IntVariable _intVariable;
         [SerializeField] private int _simpleValue;
         [SerializeField] private bool _useSimple;
 
-        public IntReference(IntVariable variable)
-        {
+        public IntReference(IntVariable variable) {
             _intVariable = variable;
             _useSimple = false;
         }
 
-        public IntReference(int value)
-        {
+        public IntReference(int value) {
             _simpleValue = value;
             _useSimple = true;
         }
 
-        public int GetValue()
-        {
+        public int GetValue() {
             return _useSimple ? _simpleValue : _intVariable.Value;
         }
-        public void ApplyChange(int change)
-        {
-            if (_useSimple)
-            {
+
+        public void ApplyChange(int change) {
+            if (_useSimple) {
                 _simpleValue += change;
-            }
-            else
-            {
+            } else {
                 _intVariable.ApplyChange(change);
             }
+        }
+        
+        public override string ToString() {
+            return GetValue().ToString();
         }
     }
 }

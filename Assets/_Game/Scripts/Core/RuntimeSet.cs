@@ -2,19 +2,26 @@
 using UnityEngine;
 
 namespace Core {
-    public abstract class RuntimeSet<TKey, TValue> : ScriptableObject {
-        public Dictionary<TKey, TValue> Items = new Dictionary<TKey, TValue>();
-
-        protected void Add(TKey key, TValue value) {
-            if (!Items.TryGetValue(key, out _)) {
-                Items.Add(key, value);
-            }
+    public abstract class RuntimeSet<T> : ScriptableObject where T : IRuntimeSetObject {
+        protected Dictionary<int, T> _items = new Dictionary<int, T>();
+        
+        protected virtual void OnEnable()
+        {
+            _items.Clear();
         }
 
-        protected void Remove(TKey key) {
-            if (Items.TryGetValue(key, out _)) {
-                Items.Remove(key);
-            }
+        public T Get(int instanceId) {
+            _items.TryGetValue(instanceId, out T item);
+
+            return item;
+        }
+
+        public virtual void Add(T value) {
+            _items.Add(value.InstanceId, value);
+        }
+
+        public virtual void Remove(int instanceId) {
+            _items.Remove(instanceId);
         }
     }
 }

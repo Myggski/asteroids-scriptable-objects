@@ -1,3 +1,4 @@
+using Core;
 using DefaultNamespace.ScriptableEvents;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -5,9 +6,11 @@ using Random = UnityEngine.Random;
 namespace Asteroids
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class Asteroid : MonoBehaviour
+    public class Asteroid : MonoBehaviour, IRuntimeSetObject
     {
-        [SerializeField] private ScriptableEventInt _onAsteroidDestroyed;
+        [Header("References:")]
+        [SerializeField] private Transform _shape;
+        [SerializeField] private ScriptableEventInt _onAsteroidHit;
         [SerializeField] private AsteroidSet _asteroidSet;
 
         [Header("Config:")]
@@ -18,16 +21,22 @@ namespace Asteroids
         [SerializeField] private float _minTorque;
         [SerializeField] private float _maxTorque;
 
-        [Header("References:")]
-        [SerializeField] private Transform _shape;
-
         private Rigidbody2D _rigidbody;
         private Vector3 _direction;
         private int _instanceId;
         
         public int InstanceId => _instanceId;
+        /// <summary>
+        /// Returns true if the asteroid is big enough
+        /// </summary>
+        public bool IsSplittable => _shape.localScale.x > (_maxSize + _minSize) / 2;
 
-        private void Start()
+        /// <summary>
+        /// Gets the local scale size of the asteroid
+        /// </summary>
+        public Vector3 LocalScaleSize => _shape.localScale;
+
+        private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody2D>();
             _instanceId = GetInstanceID();
@@ -35,7 +44,7 @@ namespace Asteroids
             SetDirection();
             AddForce();
             AddTorque();
-            SetSize();
+            SetRandomSize();
             RegisterAsteroid();
         }
         
@@ -43,21 +52,18 @@ namespace Asteroids
         {
             if (string.Equals(other.tag, "Laser"))
             {
-               HitByLaser();
+               HitByLaser(other.gameObject);
             }
         }
 
-        private void HitByLaser()
-        {
-            _onAsteroidDestroyed.Raise(_instanceId);
+        private void OnDestroy() {
+            _asteroidSet.Remove(_instanceId);
         }
-        
-        public void OnHitByLaserInt(int asteroidId)
+
+        private void HitByLaser(GameObject laserGameObject)
         {
-            if (_instanceId == asteroidId)
-            {
-                Destroy(gameObject);
-            }
+            Destroy(laserGameObject);
+            _onAsteroidHit.Raise(_instanceId);
         }
         
         private void SetDirection()
@@ -88,19 +94,26 @@ namespace Asteroids
             
             _rigidbody.AddTorque(torque, ForceMode2D.Impulse);
         }
+        
+        /// <summary>
+        /// Sets size of asteroid
+        /// </summary>
+        /// <param name="localScaleSize">Size in local scale</param>
+        public void SetSize(Vector3 localScaleSize) {
+            _shape.localScale = localScaleSize;
+        }
 
-        private void SetSize()
+        private void SetRandomSize()
         {
             var size = Random.Range(_minSize, _maxSize);
             _shape.localScale = new Vector3(size, size, 0f);
         }
 
+        /// <summary>
+        /// Adds the asteroid to the AsteroidSet-list
+        /// </summary>
         private void RegisterAsteroid() {
-            _asteroidSet.RegisterAsteroid(this);
-        }
-
-        private void OnDestroy() {
-            _asteroidSet.DestroyAsteroid(this);
+            _asteroidSet.Add(this);
         }
     }
 }

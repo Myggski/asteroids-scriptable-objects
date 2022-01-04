@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c68e1ad2e03040c7b14658979367506e, type: 3}
   m_Name: AsteroidSet
   m_EditorClassIdentifier: 
-  Items:
-    items: []
+  _asteroidDestroyedObservable: {fileID: 11400000, guid: c7b902be2b666bd43961928894454c3d, type: 2}
