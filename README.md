@@ -14,7 +14,7 @@ Implement a gameplay feature using one or more Scriptable Events.
 3. **Event Debugger.**\
       Create a debugger class that can toggle sending Debug.Logs from our events, telling us what event was fired and with what data.
 
-<ins>I did both assignment 2 (Asteroid Destroyer) and 3 (Event Debugger).</ins>
+*I did both assignment 2 (Asteroid Destroyer) and 3 (Event Debugger).*
 
 ### Assignment 2 - Asteroid Destroyer
 Whenever a asteroid is being hit, it checks the size of the asteroid. If the asteroid is big enough it halves the hitted asteroids size, and instantiates another one in the same size as asteroid that got hit.
