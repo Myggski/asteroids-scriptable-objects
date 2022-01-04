@@ -1,6 +1,4 @@
-﻿using System;
-using DefaultNamespace.ScriptableEvents;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using Variables;
 
@@ -11,7 +9,6 @@ namespace UI
         [Header("Health:")]
         [SerializeField] private IntVariable _healthVar;
         [SerializeField] private TextMeshProUGUI _healthText;
-        [SerializeField] private ScriptableEventIntReference _onHealthChangedEvent;
         
         [Header("Score:")]
         [SerializeField] private TextMeshProUGUI _scoreText;
@@ -27,9 +24,22 @@ namespace UI
             SetHealthText($"Health: {_healthVar.Value}");
         }
 
-        public void OnHealthChanged(IntReference newValue)
+        public void OnHealthChanged(IntReference newHealth)
         {
-            SetHealthText($"Health: {newValue.GetValue()}");
+            SetHealthText($"Health: {newHealth.GetValue()}");
+        }
+        
+        public void OnDestroyedAsteroidsChanged(IntReference newDestroyedAsteroids)
+        {
+            SetScoreText($"Asteroids Destroyed: {newDestroyedAsteroids.GetValue()}");
+        }
+
+        public void OnPlayTimeUpdated(IntReference timeLeft) {
+            SetTimerText($"Time: {timeLeft.GetValue()}");
+        }
+
+        public void OnLaserFired(IntReference totalLasersFired) {
+            SetLaserText($"Lasers Fired: {totalLasersFired.GetValue()}");
         }
 
         private void SetHealthText(string text)

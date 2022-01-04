@@ -1,62 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
+using DefaultNamespace.ScriptableEvents;
 using UnityEngine;
 
 namespace Asteroids
 {
-    public class AsteroidSet : ScriptableObject
-    {
-        private Dictionary<int, Asteroid> _asteroids = new Dictionary<int, Asteroid>();
+    public class AsteroidDestroyer : MonoBehaviour {
+        [Header("References:")]
+        [SerializeField] private AsteroidSet _asteroidSet;
+        [SerializeField] private ScriptableEventInt _onAsteroidSplit;
 
-        private void Awake()
-        {
-            Clear();
-        }
+        /// <summary>
+        /// Gets triggered by onAsteroidOnHitEvent (Scriptable event)
+        /// Checks if the asteroid is splittable, else it gets destroyed
+        /// </summary>
+        /// <param name="instanceId">InstanceId of the asteroid</param>
+        public void OnAsteroidHitByLaser(int instanceId) {
+            Asteroid hittedAsteroid = _asteroidSet.Get(instanceId);
 
-        public void Add()
-        {
+            if (ReferenceEquals(hittedAsteroid, null)) {
+                return;
+            }
+
+            if (hittedAsteroid.IsSplittable) {
+                _onAsteroidSplit.Raise(instanceId);
+                return;
+            }
             
-        }
+            Asteroid asteroidToDestroy = _asteroidSet.Get(instanceId);
 
-        public void Remove()
-        {
-            
-        }
-
-        public Asteroid Get(int id)
-        {
-            return null;
-        }
-
-        private void Clear()
-        {
-            _asteroids = new Dictionary<int, Asteroid>();
-        }
-    }
-    
-    public class AsteroidDestroyer : MonoBehaviour
-    {
-        [SerializeField] private AsteroidSet _asteroids;
-
-        public void OnAsteroidHitByLaser(int asteroidId)
-        {
-            // Get the asteroid
-            
-            // Check if big or small
-            
-            // if small enough, we Destoy
-            
-            // if it's big, we split it up.
-        }
-
-        public void RegisterAsteroid(Asteroid asteroid)
-        {
-            
-        }
-
-        private void DestroyAsteroid(Asteroid asteroid)
-        {
-            //_asteroids.Remove()
+            if (!ReferenceEquals(asteroidToDestroy, null)) {
+                Destroy(asteroidToDestroy.gameObject);
+            }
         }
     }
 }

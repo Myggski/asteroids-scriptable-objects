@@ -1,4 +1,3 @@
-using UnityEditor.VersionControl;
 using UnityEngine;
 using Variables;
 
@@ -9,11 +8,13 @@ namespace Ship
     {
         [SerializeField] private FloatVariable _throttlePower;
         [SerializeField] private FloatVariable _rotationPower;
-        
-        [SerializeField] private float _throttlePowerSimple;
-        [SerializeField] private float _rotationPowerSimple;
 
         private Rigidbody2D _rigidbody;
+        
+        private void Start()
+        {
+            _rigidbody = GetComponent<Rigidbody2D>();
+        }
         
         private void FixedUpdate()
         {
@@ -31,23 +32,18 @@ namespace Ship
                 SteerRight();
             }
         }
-
-        private void Start()
-        {
-            _rigidbody = GetComponent<Rigidbody2D>();
-        }
     
-        public void Throttle()
+        private void Throttle()
         {
             _rigidbody.AddForce(transform.up * _throttlePower.Value, ForceMode2D.Force);
         }
 
-        public void SteerLeft()
+        private void SteerLeft()
         {
             _rigidbody.AddTorque(_rotationPower.Value, ForceMode2D.Force);
         }
 
-        public void SteerRight()
+        private void SteerRight()
         {
             _rigidbody.AddTorque(-_rotationPower.Value, ForceMode2D.Force);
         }

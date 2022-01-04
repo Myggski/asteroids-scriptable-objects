@@ -1,51 +1,30 @@
-﻿using System;
-using UnityEditor.Timeline.Actions;
+﻿using Game;
+using System;
+using System.Runtime.CompilerServices;
+using Core.Tools.CustomDebugger;
 using UnityEngine;
 
-namespace DefaultNamespace.ScriptableEvents
-{
-    public abstract class ScriptableEventBase : ScriptableObject
-    {
+namespace DefaultNamespace.ScriptableEvents {
+    public abstract class ScriptableEventBase : ScriptableObject {
         private event Action _eventNoPayload;
-        
-        public void Register(Action onEventNoPayload)
-        {
+
+        public void Register(Action onEventNoPayload) {
             _eventNoPayload += onEventNoPayload;
         }
-        
-        public void Unregister(Action onEventNoPayload)
-        {
+
+        public void Unregister(Action onEventNoPayload) {
             _eventNoPayload -= onEventNoPayload;
         }
 
-        public void Raise()
-        {
+        public void Raise(
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0
+        ) {
+#if EVENT_DEBUG
+            EventDebugger.Log(this, memberName, sourceFilePath, sourceLineNumber);
+#endif
             _eventNoPayload?.Invoke();
-        }
-    }
-
-    [CreateAssetMenu(fileName = "new ScriptableEvent", menuName = "ScriptableObjects/ScriptableEvent", order = 0)]
-    public class ScriptableEvent : ScriptableEventBase
-    {
-    }
-
-    public abstract class ScriptableEvent<TPayload> : ScriptableEventBase
-    {
-        private event Action<TPayload> _event;
-        
-        public void Register(Action<TPayload> onEventNoPayload)
-        {
-            _event += onEventNoPayload;
-        }
-        
-        public void Unregister(Action<TPayload> onEventNoPayload)
-        {
-            _event -= onEventNoPayload;
-        }
-        
-        public void Raise(TPayload newValue)
-        {
-            _event?.Invoke(newValue);
         }
     }
 }

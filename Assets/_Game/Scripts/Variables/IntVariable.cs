@@ -3,8 +3,7 @@ using UnityEngine;
 
 namespace Variables
 {
-    // TODO Can we use generics to avoid duplication?
-    [CreateAssetMenu(fileName = "new FloatVariable", menuName = "ScriptableObjects/Variables/IntVariable")]
+    [CreateAssetMenu(fileName = "New FloatVariable", menuName = "ScriptableObjects/Variables/IntVariable")]
     public class IntVariable : ScriptableObject
     {
         [SerializeField] private int _value;
@@ -13,29 +12,20 @@ namespace Variables
 
         public int Value => _currentValue;
 
+        protected IntReference ToIntReference() => new IntReference(this);
+
         public virtual void ApplyChange(int change)
         {
             _currentValue += change;
-        }
-
-        public virtual void SetValue(int newValue)
-        {
-            _currentValue = newValue;
         }
 
         private void OnEnable()
         {
             _currentValue = _value;
         }
-    }
 
-    public class VariableBase<T> : ScriptableObject
-    {
-        
-    }
-
-    public class MyIntThingie : VariableBase<int>
-    {
-        
+        public override string ToString() {
+            return Value.ToString();
+        }
     }
 }
